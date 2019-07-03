@@ -5,11 +5,13 @@
   "dependencies": {
     "bootstrap": "^4.3.1",
     "fs": "0.0.1-security",
+    "jquery": "^3.4.1",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^3.1.1",
     "line-reader": "^0.4.0",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.9",
+    "react-color": "^2.17.3",
     "react-dom": "^16.8.6",
     "react-file-reader": "^1.1.4",
     "react-images-upload": "^1.2.7",

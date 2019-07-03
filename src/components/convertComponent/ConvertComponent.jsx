@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
- 
+
 import { Button, Col, Card } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form'
 import ConvertComponentStyled from './ConvertStyledComponent';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { SketchPicker } from 'react-color';
+
+
+import $ from "jquery";
 
 
 const leitorDeCSV = new FileReader();
@@ -15,11 +19,12 @@ class ConvertComponent extends Component {
     super(props);
 
     this.state = {
-      validated: false, logo: '', pictures: [], imgSrc: null, doc: "", listaLinhas: []
+      validated: false, logo: '', pictures: [], imgSrc: null, doc: "", listaLinhas: [], color: { r: 41, g: 128, b: 186 }, displayColorPicker: false,
     }
 
     this.downloadPdf = this.downloadPdf.bind(this);
     this.validaCampos = this.validaCampos.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.leCSV = this.leCSV.bind(this);
 
 
@@ -28,9 +33,26 @@ class ConvertComponent extends Component {
 
   componentDidMount() {
 
-
+    $( "#root" ).click(function(e) {
+      console.log("click 1", e.target);
+      console.log("click 2", e.target.className);
+      if(e.target.className.indexOf("form") > -1 ||  e.target.className.indexOf("sc-bdVaJa") > -1  ||  e.target.className.indexOf("form-control") > -1 ||  e.target.className.indexOf("card") > -1){
+        this.handleClose();
+      }
+    }.bind(this));
 
   }
+
+  
+
+  handleClick = () => {
+    this.setState({ displayColorPicker: !this.state.displayColorPicker })
+  };
+
+  handleClose = () => {
+    this.setState({ displayColorPicker: false })
+  };
+
 
   header(nome, doc) {
 
@@ -42,6 +64,9 @@ class ConvertComponent extends Component {
     doc.addImage(imgData, 'JPEG', 15, 10, 30, 30)
   };
 
+  handleChange(color, event) {
+    this.setState({ color: color.rgb })
+  }
 
 
   downloadPdf(listaData) {
@@ -63,10 +88,10 @@ class ConvertComponent extends Component {
       for (let j = 0; j < linha.length; j++) {
         const element = linha[j];
 
-        if(!listaData[2].checked && j === 1){
+        if (!listaData[2].checked && j === 1) {
           continue;
         }
-        if(!listaData[3].checked && j === 4){
+        if (!listaData[3].checked && j === 4) {
           continue;
         }
 
@@ -83,6 +108,9 @@ class ConvertComponent extends Component {
     doc.autoTable({
       head: [listaLinha[0]],
       body: listaLinha.slice(1, listaLinha.length - 1),
+      headStyles: {
+        fillColor: [this.state.color.r, this.state.color.g, this.state.color.b],
+      },
       didDrawPage: function (data) {
         // Header
         doc.setFontSize(30);
@@ -281,7 +309,7 @@ class ConvertComponent extends Component {
                   />
                 </Form.Group>
 
-                <Form.Group style={{ left: "30px" }}  as={Col} controlId="mostraCampoMode">
+                <Form.Group style={{ left: "30px" }} as={Col} controlId="mostraCampoMode">
                   <Form.Check
                     label="Mostrar Coluna Mode"
                   />
@@ -300,15 +328,29 @@ class ConvertComponent extends Component {
                 </Form.Group>
 
                 <Form.Group style={{ left: "30px" }} as={Col} controlId="aquivo">
+                  <Button className="button-color" style={{ border: `1px solid rgb(${this.state.color.r}, ${this.state.color.g},${this.state.color.b})`, backgroundColor: `rgb(${this.state.color.r}, ${this.state.color.g},${this.state.color.b} )` }} onClick={ this.handleClick }>
+                    Selecionar a cor da primeira linha da tabela
+                  </Button>
+
+                  {this.state.displayColorPicker ? <div className={"popover"} style={{top : "42px"}}>
+                    <div className={"cover"} onClick={this.handleClose} />
+                    <SketchPicker color={this.state.color} onChange={this.handleChange} />
+                  </div> : null}
+                </Form.Group>
+              </Form.Row>
+
+              <Form.Row>
+
+                <Form.Group as={Col} controlId="aquivo">
                   <Button variant="success" type="submit">
                     Gerar PDF
                   </Button>
                 </Form.Group>
               </Form.Row>
-
             </Form>
 
           </Card.Body>
+
 
         </Card>
 

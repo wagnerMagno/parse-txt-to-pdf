@@ -19,6 +19,7 @@ class ConvertComponent extends Component {
     super(props);
 
     this.state = {
+      nomeLogo : "", nomeTxt : "",
       validated: false, logo: '', pictures: [], imgSrc: null, doc: "", listaLinhas: [], color: { r: 41, g: 128, b: 186 }, displayColorPicker: false,
     }
 
@@ -34,8 +35,6 @@ class ConvertComponent extends Component {
   componentDidMount() {
 
     $( "#root" ).click(function(e) {
-      console.log("click 1", e.target);
-      console.log("click 2", e.target.className);
       if(e.target.className.indexOf("form") > -1 ||  e.target.className.indexOf("sc-bdVaJa") > -1  ||  e.target.className.indexOf("form-control") > -1 ||  e.target.className.indexOf("card") > -1){
         this.handleClose();
       }
@@ -152,8 +151,6 @@ class ConvertComponent extends Component {
     event.preventDefault();
     const form = event.currentTarget;
 
-    console.log("nome da empresa ", form.elements[0].value);
-
     if (form.checkValidity()) {
       this.setState({ validated: false });
       this.downloadPdf(form.elements);
@@ -170,8 +167,10 @@ class ConvertComponent extends Component {
 
   handleFileSelect = event => {
     const files = event.target.files
+
     if (files && files.length > 0) {
       const isVerified = true
+      const nomeLogo = event.target.files[0].name;
       if (isVerified) {
         // imageBase64Data 
         const currentFile = files[0]
@@ -180,7 +179,8 @@ class ConvertComponent extends Component {
           const myResult = myFileItemReader.result
           this.setState({
             imgSrc: myResult,
-            imgSrcExt: this.extractImageFileExtensionFromBase64(myResult)
+            imgSrcExt: this.extractImageFileExtensionFromBase64(myResult), 
+            nomeLogo : nomeLogo
           })
         }, false)
 
@@ -194,6 +194,10 @@ class ConvertComponent extends Component {
     let file = event.target.files[0];
     leitorDeCSV.onload = this.leCSV;
     leitorDeCSV.readAsText(file, 'UTF-16');
+
+    this.setState({
+      nomeTxt : file.name
+    })
 
   }
 
@@ -295,7 +299,7 @@ class ConvertComponent extends Component {
                   <Form.Label className="label-file label-logo" > Selecion uma Logo</Form.Label>
 
                   <Form.Control accept="image/*" type='file' multiple={false} onChange={this.handleFileSelect} required placeholder="Selecione a logo" />
-
+                  <p style={{ marginLeft: "30px" , marginTop: "0", fontSize: "13px"}}> {this.state.nomeLogo} </p>
                   <Form.Control.Feedback className="desloca-esquerda" onChange={this.setarLogo} type="invalid">
                     Por favor selecione uma logo.
                   </Form.Control.Feedback>
@@ -322,6 +326,7 @@ class ConvertComponent extends Component {
                 <Form.Group as={Col} controlId="aquivo">
                   <Form.Label className="label-file">Selecione o arquivo (txt)</Form.Label>
                   <Form.Control type="file" accept=".txt" onChange={e => this.handleFiles(e)} required placeholder="Selecione o arquivo" />
+                  <p style={{marginTop: "-7px", fontSize: "13px",}} > {this.state.nomeTxt} </p>  
                   <Form.Control.Feedback type="invalid">
                     Por favor selecione o arquivo.
                   </Form.Control.Feedback>

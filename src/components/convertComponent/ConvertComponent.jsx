@@ -112,8 +112,8 @@ class ConvertComponent extends Component {
       },
       didDrawPage: function (data) {
         // Header
-        doc.setFontSize(30);
-        doc.text(100, 25, nomeEmpresa, 'center');
+        doc.setFontSize(20);
+        doc.text(50, 25, nomeEmpresa, 'left');
         doc.setFontSize(16);
 
         doc.addImage(imgData, 'JPEG', 15, 10, 30, 30);
@@ -265,7 +265,6 @@ class ConvertComponent extends Component {
       }
 
     }
-    console.log("cmd wag ", arrayAux);
 
     this.setState({
       listaLinhas: arrayAux
@@ -296,7 +295,7 @@ class ConvertComponent extends Component {
                 </Form.Group>
 
                 <Form.Group as={Col} controlId="logo">
-                  <Form.Label className="label-file label-logo" > Selecion uma Logo</Form.Label>
+                  <Form.Label className="label-file label-logo" > Selecione uma Logo</Form.Label>
 
                   <Form.Control accept="image/*" type='file' multiple={false} onChange={this.handleFileSelect} required placeholder="Selecione a logo" />
                   <p style={{ marginLeft: "30px" , marginTop: "0", fontSize: "13px"}}> {this.state.nomeLogo} </p>
